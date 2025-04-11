@@ -1,0 +1,18 @@
+<h2>My Loans</h2>
+<%= link_to "Request Loan", new_loan_path %>
+<table>
+  <tr>
+    <th>Amount</th>
+    <th>Interest</th>
+    <th>Status</th>
+    <th>Actions</th>
+  </tr>
+  <% @loans.each do |loan| %>
+    <tr>
+      <td><%= loan.principal_amount %></td>
+      <td><%= loan.interest_rate %>%</td>
+      <td><%= loan.state %></td>
+      <td><%= link_to "View", loan_path(loan) %></td>
+    </tr>
+  <% end %>
+</table>

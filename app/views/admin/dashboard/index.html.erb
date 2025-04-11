@@ -1,0 +1,103 @@
+
+<div class="text-center">
+    <h1>Admin Dashboard</h1>
+</div>
+
+<div >
+    <br>
+    <div class="row">
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="card border-dark mb-3">
+        <div class="card-header">Total Users</div>
+        <div class="card-body text-dark">
+            <h5 class="card-title"><%= @user_count %></h5>
+            <p class="card-text">All active users.</p>
+        </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="card border-dark mb-3">
+        <div class="card-header">Total Loans</div>
+        <div class="card-body text-dark">
+            <h5 class="card-title"><%= @total_loans %></h5>
+            <p class="card-text">(requested, approved, open, closed, etc.)</p>
+        </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="card border-dark mb-3">
+        <div class="card-header">Recently approved loans </div>
+        <div class="card-body text-dark">
+            <h5 class="card-title"><%= @approved_count || 0 %></h5>
+            <p class="card-text">Events happening soon.</p>
+        </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="card border-dark mb-3">
+        <div class="card-header">Recently rejected loans</div>
+        <div class="card-body text-dark">
+            <h5 class="card-title"><%= @rejected_count || 0 %></h5>
+            <p class="card-text">Total earnings from bookings.</p>
+        </div>
+        </div>
+    </div>
+    </div>
+
+</div>
+
+
+<div>
+        <br>
+        <h1 class='text-center'>Pending Loans</h1> 
+
+        <div class="card shadow p-4">
+          <%# button_to "Add New loan and Tickets", new_loan_path, method: :get, class: "btn btn-dark mb-3" %>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">User Name</th>
+                <th scope="col">Princpal Amount</th>
+                <th scope="col">Total Repay Amount</th>
+                <th scope="col">Intrest Rate</th>
+                <th scope="col">Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <% if @pending_loans.any? %>
+                <% @pending_loans.each_with_index do |loan, index| %>
+                  <tr>
+                    <th scope="row"><%= index + 1 %></th>
+                    <td><%= link_to loan.user.name, admin_loan_path(loan) %></td>
+                    <td><%= loan.principal_amount %></td>
+                    <td><%= loan.total_repaid_amount %></td>
+                    <td><%= loan.interest_rate %></td>
+                    <td><%= loan.state %></td>
+                    <td>
+                        <%= link_to 'View', admin_loan_path(loan) %>
+                      <%# link_to "Show", loan, class: "btn btn-primary btn-sm" %>
+                      <%# link_to "Edit", edit_loan_path(loan), class: "btn btn-primary btn-sm" %>
+
+                      <%# button_to "Delete", loan, method: :delete, class: "btn btn-primary btn-sm" %>
+                    </td>
+                  </tr>
+                <% end %>
+              <% else %>
+                <tr>
+                  <td colspan="8" class="text-center">
+                    No Pending loan Request Present
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>

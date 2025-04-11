@@ -1,0 +1,20 @@
+<h2>Propose Loan Adjustment</h2>
+
+<%= form_with model: [@loan, @adjustment] do |f| %>
+  <div>
+    <%= f.label :adjusted_amount %>
+    <%= f.number_field :adjusted_amount, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= f.label :adjusted_interest_rate %>
+    <%= f.number_field :adjusted_interest_rate, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= f.label :note, "Reason for adjustment" %>
+    <%= f.text_area :note %>
+  </div>
+
+  <%= f.submit "Propose Adjustment" %>
+<% end %>

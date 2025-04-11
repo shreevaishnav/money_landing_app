@@ -1,0 +1,2 @@
+module LoanAdjustmentsHelper
+end

@@ -1,0 +1,36 @@
+<h1>User Dashboard</h1>
+
+<p><strong>Wallet Balance:</strong> ₹<%= current_user.wallet_balance %></p>
+
+<h2>Your Loans</h2>
+<%= link_to "Request a New Loan", new_user_loan_path, class: "btn" %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Amount</th>
+      <th>Interest Rate</th>
+      <th>Status</th>
+      <th>Total Due</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @loans.each do |loan| %>
+      <tr>
+        <td>₹<%= loan.principal_amount %></td>
+        <td><%= loan.interest_rate %>%</td>
+        <td><%= loan.state %></td>
+        <td><%= number_to_currency(loan.total_amount_to_be_paid) if loan.open? %></td>
+        <td>
+          <% if loan.approved? || loan.waiting_for_adjustment_acceptance? %>
+            <%= button_to 'Accept', accept_user_loan_path(loan), method: :post %>
+            <%= button_to 'Reject', reject_user_loan_path(loan), method: :post %>
+          <% elsif loan.open? %>
+            <%= button_to 'Repay', repay_user_loan_path(loan), method: :post %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

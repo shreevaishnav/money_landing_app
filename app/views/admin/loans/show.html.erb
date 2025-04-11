@@ -1,0 +1,36 @@
+
+<h2>Loan Details</h2>
+<p>User: <%= @loan.user.name %></p>
+<p>Amount: ₹<%= @loan.principal_amount %></p>
+<p>Interest Rate: <%= @loan.interest_rate %>%</p>
+<p>Status: <%= @loan.state %></p>
+
+<% if @loan.state == "requested" %>
+  <%= form_with url: approve_admin_loan_path(@loan), method: :post do %>
+    <p>
+      Approve without changes?
+      <%= submit_tag "Approve" %>
+    </p>
+  <% end %>
+
+  <%= form_with url: approve_admin_loan_path(@loan), method: :post do %>
+    <%= hidden_field_tag :adjusted, true %>
+    <p>
+      New Amount: <%= number_field_tag :principal_amount, @loan.principal_amount %>
+    </p>
+    <p>
+      New Interest Rate: <%= number_field_tag :interest_rate, @loan.interest_rate %>
+    </p>
+    <%= submit_tag "Adjust & Send" %>
+  <% end %>
+
+  <%= form_with url: reject_admin_loan_path(@loan), method: :post do %>
+    <%= submit_tag "Reject" %>
+  <% end %>
+<% end %>
+
+<h3>Adjustments History</h3>
+<% @adjustments.each do |adj| %>
+  <p>Changed from ₹<%= adj.previous_amount %> @<%= adj.previous_interest_rate %>% to ₹<%= adj.new_amount %> @<%= adj.new_interest_rate %>%</p>
+<% end %>
+

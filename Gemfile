@@ -65,3 +65,10 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem 'devise'     # Authentication
+
+gem 'sidekiq'    # Background jobs
+
+gem 'aasm'       # State machine for loan states
+

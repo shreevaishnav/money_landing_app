@@ -1,0 +1,40 @@
+<div>
+    <br>
+    <h1 class='text-center'>All Users </h1>
+
+    <div class="card shadow p-4">
+
+        <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Wallet Balance</th>
+            <th scope="col">Loan history</th>
+            <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if @users.any? %>
+            <% @users.each_with_index do |user, index| %>
+                <tr>
+                <th scope="row"><%= index + 1 %></th>
+                <td><%= user.name %></td>
+                <td><%= user.email %></td>
+                <td><%= user.name %></td>
+                <td><%= user.name %></td>
+                <td><%= user.name %></td>
+                </tr>
+            <% end %>
+            <% else %>
+            <tr>
+                <td colspan="8" class="text-center">
+                No User Present
+                </td>
+            </tr>
+            <% end %>
+        </tbody>
+        </table>
+    </div>
+</div>
