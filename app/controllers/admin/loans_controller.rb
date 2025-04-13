@@ -1,37 +1,3 @@
-# class Admin::LoansController < ApplicationController
-#   before_action :require_admin
-#   before_action :set_loan, only: [:show]
-
-#   def index
-#     @loans = Loan.all
-#   end
-
-#   def show
-#   end
-
-#   def approve
-#     if params[:adjusted].present?
-#       # If adjustment is being made
-#       @loan.update(state: :waiting_for_adjustment_acceptance)
-#     else
-#       @loan.update(state: :approved)
-#     end
-#     redirect_to admin_dashboard_path
-#   end
-
-#   def reject
-#     @loan.update(state: :rejected)
-#     redirect_to admin_dashboard_path
-#   end
-
-#   private
-
-#   def set_loan
-#     @loan = Loan.find(params[:id])
-#   end
-# end
-
-
 class Admin::LoansController < ApplicationController
   before_action :require_admin
   before_action :set_loan, only: [:show, :approve, :reject, :adjust, :respond_readjustment]
@@ -48,20 +14,28 @@ class Admin::LoansController < ApplicationController
 
   def approve
     if params[:adjusted].present?
+      # Store old values before update
+      previous_amount = @loan.principal_amount
+      previous_interest_rate = @loan.interest_rate
+
+      # Update loan with new values
       @loan.update!(
         state: :waiting_for_adjustment_acceptance,
         principal_amount: params[:principal_amount],
         interest_rate: params[:interest_rate]
       )
+
+      # Create adjustment record
       @loan.loan_adjustments.create!(
-        previous_amount: @loan.amount_was,
-        new_amount: params[:amount],
-        previous_interest_rate: @loan.interest_rate_was,
-        new_interest_rate: params[:interest_rate],
-        adjusted_by_admin: true
+        previous_amount: previous_amount,
+        adjusted_amount: params[:principal_amount],
+        previous_interest_rate: previous_interest_rate,
+        adjusted_interest_rate: params[:interest_rate],
+        made_by: current_user.role,
+        note: params[:note]
       )
     else
-      @loan.update!(state: :approved)
+      @loan.update!(state: :approved, approved_at: Time.current)
     end
     redirect_to admin_loan_path(@loan)
   end
@@ -72,19 +46,27 @@ class Admin::LoansController < ApplicationController
   end
 
   def adjust
-    # another adjustment after readjustment_requested
+    # Store old values before update
+    previous_amount = @loan.principal_amount
+    previous_interest_rate = @loan.interest_rate
+
+    # Update loan
     @loan.update!(
       state: :waiting_for_adjustment_acceptance,
-      amount: params[:amount],
+      principal_amount: params[:principal_amount],
       interest_rate: params[:interest_rate]
     )
+
+    # Create new adjustment entry
     @loan.loan_adjustments.create!(
-      previous_amount: @loan.amount_was,
-      new_amount: params[:amount],
-      previous_interest_rate: @loan.interest_rate_was,
-      new_interest_rate: params[:interest_rate],
-      adjusted_by_admin: true
+      previous_amount: previous_amount,
+      adjusted_amount: params[:principal_amount],
+      previous_interest_rate: previous_interest_rate,
+      adjusted_interest_rate: params[:interest_rate],
+      made_by: current_user.role,
+      note: params[:note]
     )
+
     redirect_to admin_loan_path(@loan)
   end
 
@@ -102,12 +84,4 @@ class Admin::LoansController < ApplicationController
   def set_loan
     @loan = Loan.find(params[:id])
   end
-
-  # def current_admin
-  #   Admin.find(session[:admin_id]) if session[:admin_id]
-  # end
-
-  # def require_admin
-  #   redirect_to admin_login_path unless current_admin
-  # end
 end

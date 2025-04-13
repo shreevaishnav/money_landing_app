@@ -1,0 +1,8 @@
+:concurrency: 5
+:schedule:
+  interest_calculation_job:
+    every: "5m"
+    class: InterestCalculationJob
+
+:queues:
+  - default

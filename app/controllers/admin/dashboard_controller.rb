@@ -2,6 +2,7 @@ class Admin::DashboardController < ApplicationController
   before_action :require_admin
 
   def index
+    @user = current_user
     @user_count = User.where(role: "user").count
     @total_loans = Loan.all.count
     @approved_count = Loan.where(state: "approved").count

@@ -1,36 +1,92 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h2>Loan Details</h2>
+    </div>
+    <div class="card-body">
+      <p><strong>User:</strong> <%= @loan.user.name %></p>
+      <p><strong>Amount:</strong> ₹<%= @loan.principal_amount %></p>
+      <p><strong>Interest Rate:</strong> <%= @loan.interest_rate %>%</p>
+      <p><strong>Status:</strong> <span class="badge bg-info text-dark"><%= @loan.state %></span></p>
+    </div>
+  </div>
 
-<h2>Loan Details</h2>
-<p>User: <%= @loan.user.name %></p>
-<p>Amount: ₹<%= @loan.principal_amount %></p>
-<p>Interest Rate: <%= @loan.interest_rate %>%</p>
-<p>Status: <%= @loan.state %></p>
+  <% if @loan.state == "requested" %>
+    <div class="row mt-4">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            Approve Without Changes
+          </div>
+          <div class="card-body">
+            <%= form_with url: approve_admin_loan_path(@loan), method: :post, html: { class: "d-grid gap-2" } do %>
+              <%= submit_tag "Approve", class: "btn btn-success" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
 
-<% if @loan.state == "requested" %>
-  <%= form_with url: approve_admin_loan_path(@loan), method: :post do %>
-    <p>
-      Approve without changes?
-      <%= submit_tag "Approve" %>
-    </p>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            Adjust & Approve
+          </div>
+          <div class="card-body">
+            <%= form_with url: approve_admin_loan_path(@loan), method: :post do %>
+              <%= hidden_field_tag :adjusted, true %>
+
+              <div class="mb-3">
+                <%= label_tag :principal_amount, "New Amount" %>
+                <%= number_field_tag :principal_amount, @loan.principal_amount, class: "form-control" %>
+              </div>
+
+              <div class="mb-3">
+                <%= label_tag :interest_rate, "New Interest Rate (%)" %>
+                <%= number_field_tag :interest_rate, @loan.interest_rate, class: "form-control" %>
+              </div>
+
+              <div class="mb-3">
+                <%= label_tag :note, "Add Note" %>
+                <%= text_field_tag :note, nil, class: "form-control" %>
+              </div>
+
+              <%= submit_tag "Adjust & Send", class: "btn btn-primary" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            Reject Loan
+          </div>
+          <div class="card-body">
+            <%= form_with url: reject_admin_loan_path(@loan), method: :post, html: { class: "d-grid gap-2" } do %>
+              <%= submit_tag "Reject", class: "btn btn-danger" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
   <% end %>
 
-  <%= form_with url: approve_admin_loan_path(@loan), method: :post do %>
-    <%= hidden_field_tag :adjusted, true %>
-    <p>
-      New Amount: <%= number_field_tag :principal_amount, @loan.principal_amount %>
-    </p>
-    <p>
-      New Interest Rate: <%= number_field_tag :interest_rate, @loan.interest_rate %>
-    </p>
-    <%= submit_tag "Adjust & Send" %>
-  <% end %>
-
-  <%= form_with url: reject_admin_loan_path(@loan), method: :post do %>
-    <%= submit_tag "Reject" %>
-  <% end %>
-<% end %>
-
-<h3>Adjustments History</h3>
-<% @adjustments.each do |adj| %>
-  <p>Changed from ₹<%= adj.previous_amount %> @<%= adj.previous_interest_rate %>% to ₹<%= adj.new_amount %> @<%= adj.new_interest_rate %>%</p>
-<% end %>
-
+  <div class="card mt-5">
+    <div class="card-header">
+      <h3>Adjustments History</h3>
+    </div>
+    <div class="card-body">
+      <% if @adjustments.any? %>
+        <% @adjustments.each do |adj| %>
+          <p>
+            Changed from <b>₹<%= adj.previous_amount %></b> and <b><%= adj.previous_interest_rate %>% </b>
+            to: <b> ₹<%= adj.adjusted_amount %></b> and <b><%= adj.adjusted_interest_rate %>%</b>
+          </p>
+        <% end %>
+      <% else %>
+        <p class="text-muted">No adjustments yet.</p>
+      <% end %>
+    </div>
+  </div>
+</div>

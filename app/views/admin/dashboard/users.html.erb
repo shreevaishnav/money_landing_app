@@ -1,40 +1,44 @@
 <div>
-    <br>
-    <h1 class='text-center'>All Users </h1>
-
-    <div class="card shadow p-4">
-
-        <table class="table">
-        <thead>
-            <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Wallet Balance</th>
-            <th scope="col">Loan history</th>
-            <th scope="col">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% if @users.any? %>
-            <% @users.each_with_index do |user, index| %>
-                <tr>
-                <th scope="row"><%= index + 1 %></th>
-                <td><%= user.name %></td>
-                <td><%= user.email %></td>
-                <td><%= user.name %></td>
-                <td><%= user.name %></td>
-                <td><%= user.name %></td>
-                </tr>
-            <% end %>
-            <% else %>
-            <tr>
-                <td colspan="8" class="text-center">
-                No User Present
-                </td>
-            </tr>
-            <% end %>
-        </tbody>
-        </table>
+    <div class="text-center my-3">
+        <h4 class="display-6">All Users</h4>
     </div>
+
+  <div class="card shadow-sm p-4">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Email</th>
+          <th scope="col">Wallet Balance</th>
+          <th scope="col">Loan History</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% if @users.any? %>
+          <% @users.each_with_index do |user, index| %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= user.name %></td>
+              <td><%= user.email %></td>
+              <td>₹<%= user.wallet_balance || 0 %></td>
+              <td>
+                <%# link_to 'View Loans', admin_user_loans_path(user), class: "btn btn-sm btn-outline-info" %>
+              </td>
+              <td>
+                <%# State %>
+                <span class="badge bg-success">Active</span>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="6" class="text-center text-muted py-3">No User Present</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>

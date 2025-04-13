@@ -1,20 +1,4 @@
 Rails.application.routes.draw do
-  # root 'dashboard#index'
-
-  # devise_for :users
-
-  # resources :loans do
-  #   member do
-  #     post :accept
-  #     post :reject
-  #     post :repay
-  #   end
-
-  #   resources :loan_adjustments, only: [:new, :create]
-  # end
-
-  # get 'dashboard', to: 'dashboard#index'
-
   root 'dashboard#index'
   devise_for :users
 
@@ -34,10 +18,16 @@ Rails.application.routes.draw do
     get 'dashboard', to: 'dashboard#index'
     resources :loans do
       member do
-        post :accept
-        post :reject
+        post :accept_approval
+        post :reject_approval
+        post :request_readjustment
         post :repay
+        post :respond_to_adjustment
       end
     end
   end
+
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+
 end

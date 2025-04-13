@@ -1,55 +1,55 @@
-      <div>
-        <br>
-        <h1 class='text-center'>All Loans</h1>
+<div >
+  <div class="text-center my-3">
+    <h4 class="display-6">All Loans</h4>
+  </div>
+  <div class="card shadow-sm p-4">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">User Name</th>
+          <th scope="col">Principal Amount</th>
+          <th scope="col">Total Repay Amount</th>
+          <th scope="col">Interest Rate (%)</th>
+          <th scope="col">Status</th>
+          <th scope="col">Approved At</th>
+          <th scope="col">Opened At</th>
+          <th scope="col">Closed At</th>
+        </tr>
+      </thead>
 
-        <div class="card shadow p-4">
-          <%# button_to "Add New loan and Tickets", new_loan_path, method: :get, class: "btn btn-dark mb-3" %>
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">User Name</th>
-                <th scope="col">Princpal Amount</th>
-                <th scope="col">Total Repay Amount</th>
-                <th scope="col">Intrest Rate</th>
-                <th scope="col">Status</th>
-                <th scope="col">Approved At</th>
-                <th scope="col">Opened At</th>
-                <th scope="col">Closed At</th>
-              </tr>
-            </thead>
-
-            <tbody>
-
-              <% if @loans.any? %>
-                <% @loans.each_with_index do |loan, index| %>
-                  <tr>
-                    <th scope="row"><%= index + 1 %></th>
-                    <td><%= link_to loan.user.name, admin_loan_path(loan) %></td>
-                    <td><%= loan.principal_amount %></td>
-                    <td><%= loan.total_repaid_amount %></td>
-                    <td><%= loan.interest_rate %></td>
-                    <td><%= loan.state %></td>
-                    <td><%= loan.approved_at.strftime("%d %b %Y ") %></td>
-                    <td><%= loan.opened_at.strftime("%d %b %Y ") %></td>
-                    <td><%= loan.closed_at.strftime("%d %b %Y ") %></td>
-                    <%# <td> %>
-                      <%# link_to "Show", loan, class: "btn btn-primary btn-sm" %>
-                      <%# link_to "Edit", edit_loan_path(loan), class: "btn btn-primary btn-sm" %>
-
-                      <%# button_to "Delete", loan, method: :delete, class: "btn btn-primary btn-sm" %>
-                    <%# </td> %>
-                  </tr>
-                <% end %>
-              <% else %>
-                <tr>
-                  <td colspan="8" class="text-center">
-                    No loan present
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <tbody>
+        <% if @loans.any? %>
+          <% @loans.each_with_index do |loan, index| %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= link_to loan.user.name, admin_loan_path(loan), class: "text-decoration-none" %></td>
+              <td>₹<%= loan.principal_amount %></td>
+              <td>₹<%= loan.total_repaid_amount %></td>
+              <td><%= loan.interest_rate %>%</td>
+              <td>
+                <span class="badge 
+                  <%= case loan.state
+                      when "approved" then 'bg-success'
+                      when "requested" then 'bg-warning text-dark'
+                      when "rejected" then 'bg-danger'
+                      when "closed" then 'bg-secondary'
+                      else 'bg-info'
+                  end %>">
+                  <%= loan.state.humanize %>
+                </span>
+              </td>
+              <td><%= loan.approved_at.strftime("%d %b %Y") if loan.approved_at %></td>
+              <td><%= loan.opened_at.strftime("%d %b %Y") if loan.opened_at %></td>
+              <td><%= loan.closed_at.strftime("%d %b %Y") if loan.closed_at %></td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="9" class="text-center text-muted py-3">No loan present</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

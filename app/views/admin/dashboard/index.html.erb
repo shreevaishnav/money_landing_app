@@ -1,103 +1,98 @@
-
-<div class="text-center">
-    <h1>Admin Dashboard</h1>
+<div class="text-center my-3">
+  <h4 class="display-6">Admin Dashboard</h4>
 </div>
 
-<div >
-    <br>
-    <div class="row">
+<div class="container-fluid">
+  <div class="row g-4 mb-4">
     <div class="col-12 col-sm-6 col-md-3">
-        <div class="card border-dark mb-3">
-        <div class="card-header">Total Users</div>
-        <div class="card-body text-dark">
-            <h5 class="card-title"><%= @user_count %></h5>
-            <p class="card-text">All active users.</p>
-        </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="card border-dark mb-3">
-        <div class="card-header">Total Loans</div>
-        <div class="card-body text-dark">
-            <h5 class="card-title"><%= @total_loans %></h5>
-            <p class="card-text">(requested, approved, open, closed, etc.)</p>
-        </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="card border-dark mb-3">
-        <div class="card-header">Recently approved loans </div>
-        <div class="card-body text-dark">
-            <h5 class="card-title"><%= @approved_count || 0 %></h5>
-            <p class="card-text">Events happening soon.</p>
-        </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-6 col-md-3">
-        <div class="card border-dark mb-3">
-        <div class="card-header">Recently rejected loans</div>
-        <div class="card-body text-dark">
-            <h5 class="card-title"><%= @rejected_count || 0 %></h5>
-            <p class="card-text">Total earnings from bookings.</p>
-        </div>
-        </div>
-    </div>
-    </div>
-
-</div>
-
-
-<div>
-        <br>
-        <h1 class='text-center'>Pending Loans</h1> 
-
-        <div class="card shadow p-4">
-          <%# button_to "Add New loan and Tickets", new_loan_path, method: :get, class: "btn btn-dark mb-3" %>
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">User Name</th>
-                <th scope="col">Princpal Amount</th>
-                <th scope="col">Total Repay Amount</th>
-                <th scope="col">Intrest Rate</th>
-                <th scope="col">Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-
-              <% if @pending_loans.any? %>
-                <% @pending_loans.each_with_index do |loan, index| %>
-                  <tr>
-                    <th scope="row"><%= index + 1 %></th>
-                    <td><%= link_to loan.user.name, admin_loan_path(loan) %></td>
-                    <td><%= loan.principal_amount %></td>
-                    <td><%= loan.total_repaid_amount %></td>
-                    <td><%= loan.interest_rate %></td>
-                    <td><%= loan.state %></td>
-                    <td>
-                        <%= link_to 'View', admin_loan_path(loan) %>
-                      <%# link_to "Show", loan, class: "btn btn-primary btn-sm" %>
-                      <%# link_to "Edit", edit_loan_path(loan), class: "btn btn-primary btn-sm" %>
-
-                      <%# button_to "Delete", loan, method: :delete, class: "btn btn-primary btn-sm" %>
-                    </td>
-                  </tr>
-                <% end %>
-              <% else %>
-                <tr>
-                  <td colspan="8" class="text-center">
-                    No Pending loan Request Present
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
+      <div class="card border-dark shadow-sm">
+        <div class="card-header fw-bold">Total Users</div>
+        <div class="card-body text-dark text-center">
+          <h4 class="card-title"><%= @user_count %></h4>
+          <p class="card-text text-muted">All active users</p>
         </div>
       </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="card border-dark shadow-sm">
+        <div class="card-header fw-bold">Total Loans</div>
+        <div class="card-body text-dark text-center">
+          <h4 class="card-title"><%= @total_loans %></h4>
+          <p class="card-text text-muted">All types of loans</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="card border-success shadow-sm">
+        <div class="card-header fw-bold">Recently Approved</div>
+        <div class="card-body text-success text-center">
+          <h4 class="card-title"><%= @approved_count || 0 %></h4>
+          <p class="card-text text-muted">Approved loans recently</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="card border-danger shadow-sm">
+        <div class="card-header fw-bold">Recently Rejected</div>
+        <div class="card-body text-danger text-center">
+          <h4 class="card-title"><%= @rejected_count || 0 %></h4>
+          <p class="card-text text-muted">Rejected loan requests</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-4 shadow-sm mb-4">
+  <h4 class="mb-3">Wallet Balance</h4>
+  <p class="fs-5">
+    <strong>₹<%= number_with_precision(@user.wallet_balance, precision: 2) %></strong>
+  </p>
+</div>
+
+  <div class="my-5">
+    <h2 class="text-center mb-4">Pending Loan Requests</h2>
+
+    <div class="card shadow p-4">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>User Name</th>
+            <th>Principal Amount</th>
+            <th>Total Repay Amount</th>
+            <th>Interest Rate (%)</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% if @pending_loans.any? %>
+            <% @pending_loans.each_with_index do |loan, index| %>
+              <tr>
+                <td><%= index + 1 %></td>
+                <td><%= link_to loan.user.name, admin_loan_path(loan), class: "text-decoration-none fw-semibold" %></td>
+                <td>₹<%= loan.principal_amount %></td>
+                <td>₹<%= loan.total_repaid_amount %></td>
+                <td><%= loan.interest_rate %></td>
+                <td><span class="badge bg-warning text-dark"><%= loan.state.humanize %></span></td>
+                <td>
+                  <%= link_to 'View', admin_loan_path(loan), class: "btn btn-sm btn-outline-primary" %>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="7" class="text-center text-muted py-3">
+                No Pending Loan Request Present
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

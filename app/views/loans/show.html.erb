@@ -1,9 +1,0 @@
-<h2>Loan Details</h2>
-
-<p><strong>Amount:</strong> <%= @loan.principal_amount %></p>
-<p><strong>Interest Rate:</strong> <%= @loan.interest_rate %>%</p>
-<p><strong>Status:</strong> <%= @loan.state %></p>
-
-<% if @loan.state == 'open' %>
-  <%= button_to "Repay", repay_loan_path(@loan), method: :post %>
-<% end %>

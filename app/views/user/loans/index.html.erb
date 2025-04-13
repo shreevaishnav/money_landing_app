@@ -1,0 +1,100 @@
+<div class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>My Loans</h1>
+    <%= link_to 'Request New Loan', new_user_loan_path, class: "btn btn-primary" %>
+  </div>
+
+  <% if @loans.any? %>
+    <div class="card shadow p-4">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Amount (₹)</th>
+            <th>Rate (%)</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>View</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @loans.each do |loan| %>
+            <tr>
+              <td><%= loan.principal_amount %></td>
+              <td><%= loan.interest_rate %></td>
+              <td><%= loan.state.titleize %></td>
+              <td><%= loan.created_at.strftime('%d-%b-%Y') %></td>
+              <td><%= link_to 'Show', user_loan_path(loan), class: "btn btn-sm btn-outline-info" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="alert alert-warning text-center">
+      You have no loans yet.
+    </div>
+  <% end %>
+</div>
+
+<div class="container my-5">
+  <h1>Your Loan History</h1>
+
+  <% if @loans.any? %>
+    <% @loans.each do |loan| %>
+      <div class="loan-card border p-3 mb-4 shadow-sm rounded bg-light">
+        <h3>Loan #<%= loan.id %> - State: <%= loan.state.humanize %></h3>
+        <p><strong>Principal:</strong> ₹ <%= loan.principal_amount %></p>
+        <p><strong>Interest Rate:</strong> <%= loan.interest_rate %> %</p>
+        <p><strong>Created At:</strong> <%= loan.created_at.strftime("%d-%b-%Y %I:%M %p") %></p>
+        <p><strong>Total Repaid:</strong> ₹ <%= loan.total_repaid_amount %></p>
+
+        <% if loan.loan_adjustments.any? %>
+          <h4>Adjustment History:</h4>
+          <ul>
+            <% loan.loan_adjustments.each do |adj| %>
+              <li>
+                <strong>By:</strong> <%= adj.made_by %> |
+                <strong>Old Amount:</strong> ₹ <%= adj.previous_amount %> → ₹ <%= adj.adjusted_amount %>,
+                <strong>Old Rate:</strong> <%= adj.previous_interest_rate %>% → <%= adj.adjusted_interest_rate %>%
+                <br>
+                <em>Note:</em> <%= adj.note %>
+                <br>
+                <em>At:</em> <%= adj.created_at.strftime("%d-%b-%Y %I:%M %p") %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+
+        <% if loan.state == "waiting_for_adjustment_acceptance" %>
+          <div class="d-flex gap-2 my-2">
+            <%= form_with url: respond_to_adjustment_user_loan_path(loan), method: :post do %>
+              <%= hidden_field_tag :decision, "accept" %>
+              <%= submit_tag "Accept Adjustment", class: "btn btn-success" %>
+            <% end %>
+
+            <%= form_with url: respond_to_adjustment_user_loan_path(loan), method: :post do %>
+              <%= hidden_field_tag :decision, "reject" %>
+              <%= submit_tag "Reject Adjustment", class: "btn btn-danger" %>
+            <% end %>
+
+            <%= form_with url: respond_to_adjustment_user_loan_path(loan), method: :post do %>
+              <%= hidden_field_tag :decision, "readjust" %>
+              <%= submit_tag "Request Readjustment", class: "btn btn-warning" %>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% if loan.state == "open" %>
+          <p><strong>Total Due:</strong> ₹ <%= loan.principal_amount + loan.accrued_interest %></p>
+          <%= form_with url: repay_user_loan_path(loan), method: :post do %>
+            <%= submit_tag "Repay Loan", class: "btn btn-primary" %>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="alert alert-info text-center">
+      No loan history available.
+    </div>
+  <% end %>
+</div>

@@ -3,6 +3,6 @@ class User::DashboardController < ApplicationController
 
   def index
     @user = current_user
-    @loans = @user.loans
+    @active_loan = @user.loans.where(state: 'open').last
   end
 end

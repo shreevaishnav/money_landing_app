@@ -2,24 +2,23 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       
-      <h1 class="text-center text-light" >Loan Portal</h1>
+      <a class="navbar-brand fw-bold" href="#">Loan Portal</a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <div class="ms-auto d-flex align-items-center gap-3">
-          <span class="navbar-text text-light">
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+          <li class="nav-item me-3 text-white">
             Signed in as: <%= current_user.email %> | Role: <%= current_user.role.capitalize %>
-          </span>
-
-          <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: 'btn btn-outline-light btn-sm' %>
-        </div>
+          </li>
+          <li class="nav-item">
+            <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: 'btn btn-outline-light btn-sm' %>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
 <% end %>
-
-

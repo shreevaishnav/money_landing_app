@@ -1,0 +1,32 @@
+<div class="container my-5">
+  <div class="card shadow p-4">
+    <h2 class="mb-4">Loan Details</h2>
+
+    <p><strong>Amount:</strong> ₹<%= @loan.principal_amount %></p>
+    <p><strong>Interest Rate:</strong> <%= @loan.interest_rate %> %</p>
+    <p><strong>Status:</strong> <%= @loan.state.titleize %></p>
+    <p><strong>Requested On:</strong> <%= @loan.created_at.strftime('%d-%b-%Y %I:%M %p') %></p>
+  </div>
+
+  <% if @loan.state == 'approved' || @loan.state == 'waiting_for_adjustment_acceptance' %>
+    <div class="card shadow p-4 mt-4">
+      <h3 class="mb-3">Admin Response</h3>
+
+      <div class="d-flex flex-wrap gap-2">
+        <%= form_with url: accept_approval_user_loan_path(@loan), method: :post, class: "d-inline" do %>
+          <%= submit_tag 'Accept Loan', class: "btn btn-success" %>
+        <% end %>
+
+        <%= form_with url: reject_approval_user_loan_path(@loan), method: :post, class: "d-inline" do %>
+          <%= submit_tag 'Reject Loan', class: "btn btn-danger" %>
+        <% end %>
+
+        <% if @loan.state == 'waiting_for_adjustment_acceptance' %>
+          <%= form_with url: request_readjustment_user_loan_path(@loan), method: :post, class: "d-inline" do %>
+            <%= submit_tag 'Request Readjustment', class: "btn btn-warning" %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

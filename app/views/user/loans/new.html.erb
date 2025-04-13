@@ -1,15 +1,19 @@
-<h1>Request a New Loan</h1>
+<div class="container my-5">
+  <h1 class="mb-4 text-center">Request a Loan</h1>
 
-<%= form_with model: [:user, @loan] do |f| %>
-  <div>
-    <%= f.label :principal_amount, "Loan Amount" %>
-    <%= f.number_field :principal_amount, required: true %>
+  <div class="card shadow p-4">
+    <%= form_with model: [:user, @loan], local: true do |f| %>
+      <div class="mb-3">
+        <%= f.label :principal_amount, 'Loan Amount (₹)', class: "form-label" %>
+        <%= f.number_field :principal_amount, step: 100, min: 100, required: true, class: "form-control", placeholder: "Enter loan amount" %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :interest_rate, 'Interest Rate (%)', class: "form-label" %>
+        <%= f.number_field :interest_rate, step: 0.1, min: 0.1, required: true, class: "form-control", placeholder: "Enter interest rate" %>
+      </div>
+
+      <%= f.submit "Submit Request", class: "btn btn-primary text-center" %>
+    <% end %>
   </div>
-
-  <div>
-    <%= f.label :interest_rate, "Interest Rate (%)" %>
-    <%= f.number_field :interest_rate, step: 0.1, required: true %>
-  </div>
-
-  <%= f.submit "Submit Request" %>
-<% end %>
+</div>

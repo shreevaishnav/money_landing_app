@@ -70,5 +70,7 @@ gem 'devise'     # Authentication
 
 gem 'sidekiq'    # Background jobs
 
+gem 'sidekiq-scheduler' #jobs schedular
+
 gem 'aasm'       # State machine for loan states
 
