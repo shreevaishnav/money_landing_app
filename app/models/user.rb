@@ -11,7 +11,6 @@ class User < ApplicationRecord
   before_create :set_default_role_and_wallet
 
   def set_default_role_and_wallet
-    debugger
     self.role ||= 'user'
     self.wallet_balance = (admin? ? 1000000.00 : 10000.00)
   end

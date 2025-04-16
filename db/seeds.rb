@@ -1,6 +1,6 @@
 # Clear old data
-User.destroy_all
 Loan.destroy_all
+User.destroy_all
 
 # Create users
 admin = User.create!(

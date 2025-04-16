@@ -23,6 +23,7 @@ class User::LoansController < ApplicationController
 
   def show
     @loan = current_user.loans.find(params[:id])
+    @adjustments = @loan.loan_adjustments.order(created_at: :asc)
   end
 
   def accept_approval
@@ -85,27 +86,57 @@ class User::LoansController < ApplicationController
   #   redirect_to user_loans_path, notice: "Loan repaid successfully!"
   # end
 
+  # def repay
+  #   @loan = current_user.loans.find(params[:id])
+  #   total_due = @loan.principal_amount + @loan.accrued_interest
+  #   user = current_user
+  #   admin = User.find_by(role: "admin")
+  
+  #   repayment_amount = [user.wallet_balance, total_due].min
+  
+  #   ActiveRecord::Base.transaction do
+  #     user.update!(wallet_balance: user.wallet_balance - repayment_amount)
+  #     admin.update!(wallet_balance: admin.wallet_balance + repayment_amount)
+  
+  #     @loan.update!(
+  #       total_repaid_amount: repayment_amount,
+  #       state: "closed"
+  #     )
+  #   end
+  
+  #   flash[:notice] = "Loan repaid successfully. ₹#{repayment_amount} has been transferred to Admin."
+  #   redirect_to user_loans_path
+  # end
+
   def repay
     @loan = current_user.loans.find(params[:id])
     total_due = @loan.principal_amount + @loan.accrued_interest
-    user = current_user
-    admin = User.find_by(role: "admin")
   
-    repayment_amount = [user.wallet_balance, total_due].min
+    if current_user.wallet_balance >= total_due
+      ActiveRecord::Base.transaction do
+        current_user.update!(wallet_balance: current_user.wallet_balance - total_due)
   
-    ActiveRecord::Base.transaction do
-      user.update!(wallet_balance: user.wallet_balance - repayment_amount)
-      admin.update!(wallet_balance: admin.wallet_balance + repayment_amount)
+        admin = User.find_by(role: "admin")
+        admin.update!(wallet_balance: admin.wallet_balance + total_due)
   
-      @loan.update!(
-        total_repaid_amount: repayment_amount,
-        state: "closed"
-      )
+        @loan.update!(state: "closed", closed_at: Time.current, total_repaid_amount: total_due)
+      end
+      redirect_to user_loans_path, notice: "Loan repaid successfully!"
+    else
+      # Partial repayment
+      amount_paid = current_user.wallet_balance
+      ActiveRecord::Base.transaction do
+        current_user.update!(wallet_balance: 0)
+  
+        admin = User.find_by(role: "admin")
+        admin.update!(wallet_balance: admin.wallet_balance + amount_paid)
+  
+        @loan.update!(state: "closed", closed_at: Time.current, total_repaid_amount: amount_paid)
+      end
+      redirect_to user_loans_path, alert: "Partial repayment done due to low wallet balance. Loan marked as closed."
     end
-  
-    flash[:notice] = "Loan repaid successfully. ₹#{repayment_amount} has been transferred to Admin."
-    redirect_to user_loans_path
   end
+  
   
 
   def respond_to_adjustment

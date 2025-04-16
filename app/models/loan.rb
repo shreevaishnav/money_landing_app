@@ -1,7 +1,6 @@
 class Loan < ApplicationRecord
   belongs_to :user
   has_many :loan_adjustments, dependent: :destroy
-  has_many :interest_logs, dependent: :destroy
   
   enum state: {
     requested: 'requested',
